@@ -9,7 +9,7 @@ valid_devices = {'heater': ['Eurotherm3216', 'Eurotherm2408', 'Omega Pt', 'Jumo 
                             'Test Controller', 'Nice Test Controller'],
                  'temp_sensor': ['Pyrometer', 'Thermolino', 'Thermoplatino', 'Keithly2000', 'Eurotherm3508',
                                  'Test Sensor'],
-                 'gas_ctrl': ['Ventolino', 'Area ROD-4', 'Test-MFC'],
+                 'flow_controller': ['Ventolino', 'Area ROD-4', 'Test-MFC'],
                  'triggerbox': ['Omni Trigger', 'Valvolino', 'Test Trigger'],
                  'multiplexer': ['Omniplex']}
 valid_actions = ['set_temp', 'set_temp_blind', 'gas_ctrl', 'trigger', 'multiplexer']
@@ -87,18 +87,7 @@ def validate_action(key, config, device_config):
 
 
 def validate_massflow_action(config: dict, devices: dict) -> None:
-    if 'flow_controller' not in config:
-        delayed_exit('Missing entry flow_controller in action preset!', 1)
-
-    if config['flow_controller'] not in devices:
-        delayed_exit(f'Specified flow_controller {config['flow_controller']} not defined in device section!',
-                     1)
-
-    device = devices[config['flow_controller']]
-    if device['device'] not in valid_devices['gas_ctrl']:
-        delayed_exit(f'Specified flow_controller {device} is not a valid gas_ctrl device!'
-                     f'Valid devices are: {', '.join(valid_devices['gas_ctrl'])}',
-                     1)
+    check_device_exists_and_type(config, 'flow_controller', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['flow_controller', 'type']:
@@ -114,18 +103,7 @@ def validate_massflow_action(config: dict, devices: dict) -> None:
 
 
 def validate_triggerbox_action(config: dict, devices: dict) -> None:
-    if 'triggerbox' not in config:
-        delayed_exit('Missing entry triggerbox in action preset!', 1)
-
-    if config['triggerbox'] not in devices:
-        delayed_exit(f'Specified triggerbox {config['triggerbox']} not defined in device section!',
-                     1)
-
-    device = devices[config['triggerbox']]
-    if device['device'] not in valid_devices['triggerbox']:
-        delayed_exit(f'Specified triggerbox {device} is not a valid triggerbox device!'
-                     f'Valid devices are: {', '.join(valid_devices['triggerbox'])}',
-                     1)
+    check_device_exists_and_type(config, 'triggerbox', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['triggerbox', 'type']:
@@ -142,18 +120,7 @@ def validate_triggerbox_action(config: dict, devices: dict) -> None:
 
 
 def validate_multiplexer_action(config: dict, devices: dict) -> None:
-    if 'multiplexer' not in config:
-        delayed_exit('Missing entry multiplexer in action preset!', 1)
-
-    if config['multiplexer'] not in devices:
-        delayed_exit(f'Specified multiplexer {config['multiplexer']} not defined in device section!',
-                     1)
-
-    device = devices[config['multiplexer']]
-    if device['device'] not in valid_devices['multiplexer']:
-        delayed_exit(f'Specified multiplexer {device} is not a valid multiplexer device!'
-                     f'Valid devices are: {', '.join(valid_devices['multiplexer'])}',
-                     1)
+    check_device_exists_and_type(config, 'multiplexer', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['multiplexer', 'type']:
@@ -170,85 +137,45 @@ def validate_multiplexer_action(config: dict, devices: dict) -> None:
 
 
 def validate_temp_set_action(config: dict, devices: dict) -> None:
-    if 'heater' not in config:
-        delayed_exit('Missing entry heater in action preset!', 1)
-
-    if config['heater'] not in devices:
-        delayed_exit(f'Specified heater {config['heater']} not defined in device section!',
-                     1)
-
-    device = devices[config['heater']]
-    if device['device'] not in valid_devices['heater']:
-        delayed_exit(f'Specified heater {device} is not a valid heater device!'
-                     f'Valid devices are: {', '.join(valid_devices['heater'])}',
-                     1)
-
-    if 'sensor' not in config:
-        delayed_exit('Missing entry sensor in action preset!', 1)
-
-    if config['sensor'] not in devices:
-        delayed_exit(f'Specified sensor {config['sensor']} not defined in device section!',
-                     1)
-
-    device = devices[config['sensor']]
-    if device['device'] not in valid_devices['temp_sensor']:
-        delayed_exit(f'Specified sensor {device} is not a valid temperature sensor device!'
-                     f'Valid devices are: {', '.join(valid_devices['temp_sensor'])}',
-                     1)
-
-    if 't_set' not in config:
-        delayed_exit('Missing entry t_set in action preset!', 1)
-
-    if not isinstance(config['t_set'], (int, float)) or config['t_set'] < -200 or config['t_set'] > 1500:
-        delayed_exit(f'Invalid value encountered for t_set: {config["t_set"]}!'
-                     f' Valid values are: -200 to 1500')
-
-    if 'delta_temp' not in config:
-        delayed_exit('Missing entry delta_temp in action preset!', 1)
-
-    if not isinstance(config['delta_temp'], (int, float)) or config['delta_temp'] <= 0:
-        delayed_exit(f'Invalid value encountered for t_set: {config['delta_temp']}!'
-                     f' Valid values are positive floating point numbers')
-
-    if 'delta_time' not in config:
-        delayed_exit('Missing entry delta_time in action preset!', 1)
-
-    if not isinstance(config['delta_time'], (int, float)) or config['delta_time'] <= 0:
-        delayed_exit(f'Invalid value encountered for delta_time: {config['delta_time']}!'
-                     f' Valid values are positive floating point numbers')
-
-    if 'time_res' not in config:
-        delayed_exit('Missing entry time_res in action preset!', 1)
-
-    if not isinstance(config['time_res'], (int, float)) or config['time_res'] <= 0:
-        delayed_exit(f'Invalid value encountered for time_res: {config['time_res']}!'
-                     f' Valid values are positive floating point numbers')
+    check_device_exists_and_type(config, 'heater', devices)
+    check_device_exists_and_type(config, 'temp_sensor', devices)
+    check_value_exists_bounds(config, 't_set', -200, 1500)
+    check_value_exists_bounds(config, 'delta_temp', 0.01, 100)
+    check_value_exists_bounds(config, 'delta_time', 1, 1E6)
+    check_value_exists_bounds(config, 'time_res', 1, 100)
 
     print('Temperature set action validated sucessfully!')
 
 
 def validate_blind_temp_set_action(config: dict, devices: dict) -> None:
-    if 'heater' not in config:
-        delayed_exit('Missing entry heater in action preset!', 1)
-
-    if config['heater'] not in devices:
-        delayed_exit(f'Specified heater {config['heater']} not defined in device section!',
-                     1)
-
-    device = devices[config['heater']]
-    if device['device'] not in valid_devices['heater']:
-        delayed_exit(f'Specified heater {device} is not a valid heater device!'
-                     f'Valid devices are: {', '.join(valid_devices['heater'])}',
-                     1)
-
-    if 't_set' not in config:
-        delayed_exit('Missing entry t_set in action preset!', 1)
-
-    if not isinstance(config['t_set'], (int, float)) or config['t_set'] < -200 or config['t_set'] > 1500:
-        delayed_exit(f'Invalid value encountered for t_set: {config["t_set"]}!'
-                     f' Valid values are: -200 to 1500')
+    check_device_exists_and_type(config, 'heater', devices)
+    check_value_exists_bounds(config, 't_set', -200, 1500)
 
     print('Blind temperature set action validated sucessfully!')
+
+
+def check_value_exists_bounds(config, key, min_value, max_value):
+    if key not in config:
+        delayed_exit(f'Missing entry {key} in action preset!', 1)
+
+    if not isinstance(config[key], (int, float)) or config[key] < min_value or config[key] > max_value:
+        delayed_exit(f'Invalid value encountered for {key}: {config[key]}!'
+                     f' Valid values are: {min_value} to {max_value}')
+
+
+def check_device_exists_and_type(action_config, device_type, device_config):
+    if device_type not in action_config:
+        delayed_exit(f'Missing entry {device_type} in action preset!', 1)
+
+    if action_config[device_type] not in device_config:
+        delayed_exit(f'Specified {device_type} {action_config[device_type]} not defined in device section!',
+                     1)
+
+    device = device_config[action_config[device_type]]
+    if device['device'] not in valid_devices[device_type]:
+        delayed_exit(f'Specified {device_type} {device} is not a valid {device_type} device!'
+                     f'Valid devices are: {', '.join(valid_devices[device_type])}',
+                     1)
 
 
 if __name__ == '__main__':

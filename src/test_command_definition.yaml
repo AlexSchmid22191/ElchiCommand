@@ -15,7 +15,7 @@ devices:
     device: Thermolino
     port: COMXY
   gas_ctrl_1:
-    type: gas_ctrl
+    type: flow_controller
     device: Test-MFC
     port: COMXY
   triggerbox_1:
@@ -39,7 +39,7 @@ actions:
   1:
     type: set_temp
     heater: oven_1
-    sensor: temp_sensor_1
+    temp_sensor: temp_sensor_1
     t_set: 500
     delta_time: 900
     delta_temp: 0.5
