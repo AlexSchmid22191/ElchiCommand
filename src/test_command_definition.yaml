@@ -1,0 +1,85 @@
+# Experiment configuration file for ElchiCommand
+# v1.0
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Definition of available devices
+# Change the device type and port to match your setup or add new devices as explained in the coLab
+
+devices:
+  oven_1:
+    type: heater
+    device: Eurotherm3216
+    port: COMXY
+  temp_sensor_1:
+    type: temp_sensor
+    device: Thermolino
+    port: COMXY
+  gas_ctrl_1:
+    type: gas_ctrl
+    device: Test-MFC
+    port: COMXY
+  triggerbox_1:
+    type: triggerbox
+    device: Test Trigger
+    port: COMXY
+  multiplexer_1:
+    type: multiplexer
+    device: Omniplex
+    port: COMXY
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Definition of available actions to be performed as part of the experiment
+# For a detailed description of the actions, see the documentation in the colab
+# Edit these example actions to suit your needs or add new actions
+# Each action is identified by a unique number, is defiend by a type and contains one or more devices from the
+# definition above as well as one or more parameters depending on the action type
+# On each execution of ElchiCommand the action corresponding to the id given to ElchiCommand is executed
+
+actions:
+  1:
+    type: set_temp
+    heater: oven_1
+    sensor: temp_sensor_1
+    t_set: 500
+    delta_time: 900
+    delta_temp: 0.5
+    time_res: 5
+  2:
+    type: set_temp_blind
+    heater: oven_1
+    t_set: 500
+  3:
+    type: gas_ctrl
+    flow_controller: gas_ctrl_1
+    flow_1: 0.0
+    flow_2: 0.0
+    flow_3: 0.0
+    flow_4: 0.0
+  4:
+    type: trigger
+    triggerbox: triggerbox_1
+    state_1: 0
+    state_2: 0
+    state_3: 0
+    state_4: 0
+  5:
+    type: multiplexer
+    multiplexer: multiplexer_1
+    state_L1R1: 0
+    state_L2R1: 0
+    state_L3R1: 0
+    state_L4R1: 0
+    state_L1R2: 0
+    state_L2R2: 0
+    state_L3R2: 0
+    state_L4R2: 0
+    state_L1R3: 0
+    state_L2R3: 0
+    state_L3R3: 0
+    state_L4R3: 0
+    state_L1R4: 0
+    state_L2R4: 0
+    state_L3R4: 0
+    state_L4R4: 0
+
+# ----------------------------------------------------------------------------------------------------------------------
