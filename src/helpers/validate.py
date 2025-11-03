@@ -2,16 +2,9 @@ import re
 
 import serial.tools.list_ports
 
+from src.helpers.devices import devices as valid_devices
 from src.helpers.exit import delayed_exit
 
-valid_devices = {'heater': ['Eurotherm3216', 'Eurotherm2408', 'Omega Pt', 'Jumo Quantrol', 'Elch Heater Controller'
-                                                                                           'Elch Laser Control',
-                            'Test Controller', 'Nice Test Controller'],
-                 'temp_sensor': ['Pyrometer', 'Thermolino', 'Thermoplatino', 'Keithly2000', 'Eurotherm3508',
-                                 'Test Sensor'],
-                 'flow_controller': ['Ventolino', 'Area ROD-4', 'Test-MFC'],
-                 'triggerbox': ['Omni Trigger', 'Valvolino', 'Test Trigger'],
-                 'multiplexer': ['Omniplex']}
 valid_actions = ['set_temp', 'set_temp_blind', 'gas_ctrl', 'trigger', 'multiplexer']
 available_ports = [port.device for port in serial.tools.list_ports.comports()]
 available_ports.append('COMXY')
