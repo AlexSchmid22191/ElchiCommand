@@ -92,7 +92,7 @@ def _validate_massflow_action(config: dict, devices: dict) -> None:
             delayed_exit(f'Invalid value encountered for channel {inner_key}: {inner_value}!'
                          f' Valid values are: 0 to 100')
 
-    print('Mass flow action validated sucessfully!')
+    print('Gas control action validated sucessfully!')
 
 
 def _validate_triggerbox_action(config: dict, devices: dict) -> None:
