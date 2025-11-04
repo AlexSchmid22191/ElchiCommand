@@ -21,19 +21,19 @@ if not exist "%CFGDIR%" mkdir "%CFGDIR%"
   echo devices:
   echo   oven_1:
   echo     type: heater
-  echo     device: Eurotherm3216
+  echo     device: Nice Test Controller
   echo     port: COMXY
   echo   temp_sensor_1:
   echo     type: temp_sensor
-  echo     device: Thermolino
+  echo     device: Test Sensor
   echo     port: COMXY
   echo   gas_ctrl_1:
   echo     type: flow_controller
-  echo     device: Ventolino
+  echo     device: Test MFC
   echo     port: COMXY
   echo   triggerbox_1:
   echo     type: triggerbox
-  echo     device: Omnitrigger
+  echo     device: Test Trigger
   echo     port: COMXY
   echo   multiplexer_1:
   echo     type: multiplexer
