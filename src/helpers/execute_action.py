@@ -9,7 +9,7 @@ from src.helpers.exit import delayed_exit
 
 
 def execute_massflow_action(action_config: dict, devices_config: dict) -> None:
-    device = safe_connect_device(action_config, devices_config, 'flow_controller')
+    device = _safe_connect_device(action_config, devices_config, 'flow_controller')
 
     for channel, value in action_config.items():
         if channel in ['type', 'flow_controller']:
@@ -29,7 +29,7 @@ def execute_massflow_action(action_config: dict, devices_config: dict) -> None:
 
 
 def execute_triggerbox_action(action_config: dict, devices_config: dict) -> None:
-    device = safe_connect_device(action_config, devices_config, 'triggerbox')
+    device = _safe_connect_device(action_config, devices_config, 'triggerbox')
 
     for channel, value in action_config.items():
         if channel in ['type', 'triggerbox']:
@@ -49,7 +49,7 @@ def execute_triggerbox_action(action_config: dict, devices_config: dict) -> None
 
 
 def execute_multiplexer_action(action_config: dict, devices_config: dict) -> None:
-    device = safe_connect_device(action_config, devices_config, 'multiplexer')
+    device = _safe_connect_device(action_config, devices_config, 'multiplexer')
 
     for channel, value in action_config.items():
         if channel in ['type', 'triggerbox']:
@@ -70,7 +70,7 @@ def execute_multiplexer_action(action_config: dict, devices_config: dict) -> Non
 
 
 def execute_blind_temperature_action(action_config: dict, devices_config: dict) -> None:
-    device = safe_connect_device(action_config, devices_config, 'heater')
+    device = _safe_connect_device(action_config, devices_config, 'heater')
     try:
         device.set_target_setpoint(action_config['t_set'])
     except (SerialException, InvalidResponseError, IllegalRequestError, NoResponseError, ModbusException) as e:
@@ -86,8 +86,8 @@ def execute_blind_temperature_action(action_config: dict, devices_config: dict) 
 
 
 def execute_temperature_action(action_config: dict, devices_config: dict) -> None:
-    heater = safe_connect_device(action_config, devices_config, 'heater')
-    sensor = safe_connect_device(action_config, devices_config, 'temp_sensor')
+    heater = _safe_connect_device(action_config, devices_config, 'heater')
+    sensor = _safe_connect_device(action_config, devices_config, 'temp_sensor')
 
     try:
         heater.set_target_setpoint(action_config['t_set'])
@@ -138,7 +138,7 @@ def execute_temperature_action(action_config: dict, devices_config: dict) -> Non
             delayed_exit(f'Communication error when closing heater: {e}')
 
 
-def safe_connect_device(action_config: dict, devices_config: dict, dev_type: str):
+def _safe_connect_device(action_config: dict, devices_config: dict, dev_type: str):
     dev_id = devices_config[action_config[dev_type]]
     dev_class = devices[dev_id['device']]
     dev_port = dev_id['port']

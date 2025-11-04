@@ -16,7 +16,7 @@ def validate_config(config: dict) -> None:
     except KeyError:
         delayed_exit('Missing devices section in config file!', 1)
     else:
-        validate_device_config(device_config)
+        _validate_device_config(device_config)
         print('Device config validation successful!')
 
         try:
@@ -28,11 +28,11 @@ def validate_config(config: dict) -> None:
                 if not isinstance(key, int) or key < 1:
                     delayed_exit(f'Invalid preset key encounterd: {key}! Valid presetes are positive integers!')
                 else:
-                    validate_action(key, value, device_config)
+                    _validate_action(key, value, device_config)
             print('Action config validation successful!')
 
 
-def validate_device_config(device_config: dict) -> None:
+def _validate_device_config(device_config: dict) -> None:
     for key, config in device_config.items():
         print(f'Validating device {key}...')
         if missing := {'type', 'device', 'port'} - config.keys():
@@ -53,7 +53,7 @@ def validate_device_config(device_config: dict) -> None:
         print(f'Device {key} validation successful!')
 
 
-def validate_action(key, config, device_config):
+def _validate_action(key, config, device_config):
     print(f'Validating action preset {key}...')
     if 'type' not in config:
         delayed_exit(f'Missing type entry in preset {key}!', 1)
@@ -61,26 +61,26 @@ def validate_action(key, config, device_config):
     match config['type']:
         case 'set_temp':
             print('Detected temperature set action!')
-            validate_temp_set_action(config, device_config)
+            _validate_temp_set_action(config, device_config)
         case 'set_temp_blind':
             print('Detected blind temeprature set action!')
-            validate_blind_temp_set_action(config, device_config)
+            _validate_blind_temp_set_action(config, device_config)
         case 'gas_ctrl':
             print('Detected gas controller action!')
-            validate_massflow_action(config, device_config)
+            _validate_massflow_action(config, device_config)
         case 'trigger':
             print('Detected triggerbox action!')
-            validate_triggerbox_action(config, device_config)
+            _validate_triggerbox_action(config, device_config)
         case 'multiplexer':
             print('Detected multiplexer action!')
-            validate_multiplexer_action(config, device_config)
+            _validate_multiplexer_action(config, device_config)
         case _:
             delayed_exit(f'Invalid action type encountered: {config['type']}!'
                          f'Valid action types are: {', '.join(valid_actions)}', 1)
 
 
-def validate_massflow_action(config: dict, devices: dict) -> None:
-    check_device_exists_and_type(config, 'flow_controller', devices)
+def _validate_massflow_action(config: dict, devices: dict) -> None:
+    _check_device_exists_and_type(config, 'flow_controller', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['flow_controller', 'type']:
@@ -95,8 +95,8 @@ def validate_massflow_action(config: dict, devices: dict) -> None:
     print('Mass flow action validated sucessfully!')
 
 
-def validate_triggerbox_action(config: dict, devices: dict) -> None:
-    check_device_exists_and_type(config, 'triggerbox', devices)
+def _validate_triggerbox_action(config: dict, devices: dict) -> None:
+    _check_device_exists_and_type(config, 'triggerbox', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['triggerbox', 'type']:
@@ -112,8 +112,8 @@ def validate_triggerbox_action(config: dict, devices: dict) -> None:
     print('Triggerbox action validated sucessfully!')
 
 
-def validate_multiplexer_action(config: dict, devices: dict) -> None:
-    check_device_exists_and_type(config, 'multiplexer', devices)
+def _validate_multiplexer_action(config: dict, devices: dict) -> None:
+    _check_device_exists_and_type(config, 'multiplexer', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['multiplexer', 'type']:
@@ -129,25 +129,25 @@ def validate_multiplexer_action(config: dict, devices: dict) -> None:
     print('Multiplexer action validated sucessfully!')
 
 
-def validate_temp_set_action(config: dict, devices: dict) -> None:
-    check_device_exists_and_type(config, 'heater', devices)
-    check_device_exists_and_type(config, 'temp_sensor', devices)
-    check_value_exists_bounds(config, 't_set', -200, 1500)
-    check_value_exists_bounds(config, 'delta_temp', 0.01, 100)
-    check_value_exists_bounds(config, 'delta_time', 1, 1E6)
-    check_value_exists_bounds(config, 'time_res', 1, 100)
+def _validate_temp_set_action(config: dict, devices: dict) -> None:
+    _check_device_exists_and_type(config, 'heater', devices)
+    _check_device_exists_and_type(config, 'temp_sensor', devices)
+    _check_value_exists_bounds(config, 't_set', -200, 1500)
+    _check_value_exists_bounds(config, 'delta_temp', 0.01, 100)
+    _check_value_exists_bounds(config, 'delta_time', 1, 1E6)
+    _check_value_exists_bounds(config, 'time_res', 1, 100)
 
     print('Temperature set action validated sucessfully!')
 
 
-def validate_blind_temp_set_action(config: dict, devices: dict) -> None:
-    check_device_exists_and_type(config, 'heater', devices)
-    check_value_exists_bounds(config, 't_set', -200, 1500)
+def _validate_blind_temp_set_action(config: dict, devices: dict) -> None:
+    _check_device_exists_and_type(config, 'heater', devices)
+    _check_value_exists_bounds(config, 't_set', -200, 1500)
 
     print('Blind temperature set action validated sucessfully!')
 
 
-def check_value_exists_bounds(config, key, min_value, max_value):
+def _check_value_exists_bounds(config, key, min_value, max_value):
     if key not in config:
         delayed_exit(f'Missing entry {key} in action preset!', 1)
 
@@ -156,7 +156,7 @@ def check_value_exists_bounds(config, key, min_value, max_value):
                      f' Valid values are: {min_value} to {max_value}')
 
 
-def check_device_exists_and_type(action_config, device_type, device_config):
+def _check_device_exists_and_type(action_config, device_type, device_config):
     if device_type not in action_config:
         delayed_exit(f'Missing entry {device_type} in action preset!', 1)
 
