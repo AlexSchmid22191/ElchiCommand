@@ -85,7 +85,7 @@ def execute_blind_temperature_action(action_config: dict, devices_config: dict) 
         delayed_exit(f'Communication error when closing heater: {e}')
 
 
-def execute_temperature_action(action_config: dict, devices_config: dict) -> None:
+def execute_temperature_action(action_config: dict, devices_config: dict) -> None | float:
     heater = _safe_connect_device(action_config, devices_config, 'heater')
     sensor = _safe_connect_device(action_config, devices_config, 'temp_sensor')
 
@@ -136,6 +136,13 @@ def execute_temperature_action(action_config: dict, devices_config: dict) -> Non
             sensor.close()
         except SerialException as e:
             delayed_exit(f'Communication error when closing heater: {e}')
+
+    try:
+        sensor_temp = sensor.get_sensor_value()
+        print(f'Current sensor temeprature: {sensor_temp}')
+        return sensor_temp
+    except SerialException as e:
+        delayed_exit(f'Communication error when reading temperature: {e}')
 
 
 def _safe_connect_device(action_config: dict, devices_config: dict, dev_type: str):
