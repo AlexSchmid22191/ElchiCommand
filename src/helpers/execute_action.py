@@ -139,9 +139,9 @@ def execute_temperature_action(action_config: dict, devices_config: dict) -> Non
 
 
 def _safe_connect_device(action_config: dict, devices_config: dict, dev_type: str):
-    dev_id = devices_config[action_config[dev_type]]
-    dev_class = devices[dev_id['device']]
-    dev_port = dev_id['port']
+    dev_id = action_config[dev_type]
+    dev_class = devices[dev_type][devices_config[dev_id]['device']]
+    dev_port = devices_config[dev_id]['port']
     print(f'Connecting {dev_id} at {dev_port}...')
     try:
         device = dev_class(dev_port)
