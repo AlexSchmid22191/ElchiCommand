@@ -107,14 +107,14 @@ def execute_temperature_action(action_config: dict, devices_config: dict) -> Non
     print(f'Waiting until the temperature changes by less than {delta_temp} °C over {delta_time} seconds!')
 
     try:
-        last_sensor_temp = sensor.read_temperature()
+        last_sensor_temp = sensor.get_sensor_value()
     except SerialException as e:
         delayed_exit(f'Communication error when reading temperature: {e}')
     else:
         while time_remaining > 0:
             if time.time() - time_of_last_reading > time_res:
                 try:
-                    sensor_temp = sensor.read_temperature()
+                    sensor_temp = sensor.get_sensor_value()
                     print(f'Current sensor temeprature: {sensor_temp}')
                 except SerialException as e:
                     delayed_exit(f'Communication error when reading temperature: {e}')
