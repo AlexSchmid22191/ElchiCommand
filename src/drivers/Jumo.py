@@ -8,7 +8,7 @@ import src.drivers.AbstractBaseClasses as Base
 class JumoQuantol(minimalmodbus.Instrument, Base.AbstractController):
     mode = 'Temperature'
 
-    def __init__(self, portname, slaveadress):
+    def __init__(self, portname, slaveadress=1):
         super().__init__(portname, slaveadress)
         self.serial.baudrate = 9600
         self.serial.timeout = 0.25

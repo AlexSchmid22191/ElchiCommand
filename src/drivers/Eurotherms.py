@@ -9,7 +9,7 @@ class Eurotherm3216(Base.AbstractController, minimalmodbus.Instrument):
     """Instrument class for Eurotherm 3216 process controller."""
     mode = 'Temperature'
 
-    def __init__(self, portname, slaveadress, baudrate=9600):
+    def __init__(self, portname, slaveadress=1, baudrate=9600):
         super().__init__(portname, slaveadress)
         self.serial.baudrate = baudrate
         self.com_lock = threading.Lock()
@@ -111,7 +111,7 @@ class Eurotherm2408(Base.AbstractController, minimalmodbus.Instrument):
     """Instrument class for Eurotherm 2408 process controller."""
     mode = 'Temperature'
 
-    def __init__(self, portname, slaveadress, baudrate=9600):
+    def __init__(self, portname, slaveadress=1, baudrate=9600):
         super().__init__(portname, slaveadress)
         self.serial.baudrate = baudrate
         self.com_lock = threading.Lock()

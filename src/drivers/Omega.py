@@ -8,7 +8,7 @@ import src.drivers.AbstractBaseClasses as Base
 class OmegaPt(Base.AbstractController, minimalmodbus.Instrument):
     mode = 'Temperature'
 
-    def __init__(self, portname, slaveadress, *args, **kwargs):
+    def __init__(self, portname, slaveadress=1, *args, **kwargs):
         super().__init__(portname, slaveadress, *args, **kwargs)
 
         self.com_lock = threading.Lock()

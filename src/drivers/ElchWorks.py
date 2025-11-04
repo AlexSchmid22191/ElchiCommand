@@ -140,7 +140,7 @@ class Thermoplatino(Base.AbstractSensor, serial.Serial):
 class ElchLaser(Base.AbstractController, minimalmodbus.Instrument):
     mode = 'Temperature'
 
-    def __init__(self, portname, slaveadress, baudrate=9600):
+    def __init__(self, portname, slaveadress=1, baudrate=9600):
         super().__init__(portname, slaveadress)
         time.sleep(1)
         self.serial.baudrate = baudrate
