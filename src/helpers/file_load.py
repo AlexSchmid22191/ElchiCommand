@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import Dict
-
 import yaml
 import yaml.scanner
 
@@ -29,7 +28,6 @@ def load_config(config_path: str | Path) -> Dict:
             f' in the installation folder to create a default one!')
 
     print(f'I read the following configuration from {config_path}:')
-    for k, v in config.items():
-        print(f"{k}: {v}")
+    print(yaml.dump(config, default_flow_style=False, default_style=''))
 
     return config
