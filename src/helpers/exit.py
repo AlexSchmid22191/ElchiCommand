@@ -1,10 +1,14 @@
 import sys
 import time
+from colorama import just_fix_windows_console, Fore, Style
+
+just_fix_windows_console()
 
 
 def delayed_exit(message: str, error_code=0):
-    print(message)
-    print('Press enter to exit!')
+    print(Fore.RED + message)
+    print(Fore.YELLOW + 'Press enter to exit!')
+    print(Style.RESET_ALL)
     input()
     sys.exit(error_code)
 
