@@ -5,7 +5,7 @@ a = Analysis(
     ['src\\elchi_commander.py'],
     pathex=['.'],
     binaries=[],
-    datas=[],
+    datas=[('make_default_config.bat', '.'), ('make_test_config.bat', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
