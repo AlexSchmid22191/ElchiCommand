@@ -134,20 +134,20 @@ def execute_temperature_action(action_config: dict, devices_config: dict) -> Non
         else:
             print('Temperature stabilized!')
         try:
+            sensor_temp = sensor.get_sensor_value()
+            print(f'Stable sensor temeprature: {sensor_temp}')
+        except SerialException as e:
+            delayed_exit(f'Communication error when reading temperature: {e}')
+            sensor_temp = None
+        try:
             if isinstance(heater, Serial):
                 heater.close()
             elif isinstance(heater, Instrument):
                 heater.serial.close()
             sensor.close()
         except SerialException as e:
-            delayed_exit(f'Communication error when closing heater: {e}')
-
-    try:
-        sensor_temp = sensor.get_sensor_value()
-        print(f'Current sensor temeprature: {sensor_temp}')
+            delayed_exit(f'Communication error when closing heater/sensor: {e}')
         return sensor_temp
-    except SerialException as e:
-        delayed_exit(f'Communication error when reading temperature: {e}')
 
 
 def execute_iterate_list_action(_action_id: int, action_config: dict, whole_config: dict) -> None:
