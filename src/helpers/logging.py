@@ -1,8 +1,9 @@
+import datetime
 from pathlib import Path
 
 from platformdirs import user_config_dir
+
 from src.helpers.exit import delayed_exit
-import datetime
 
 
 def log_message(message):
@@ -24,7 +25,9 @@ def log_action(action_id: int, action_config: dict):
     message = f'Executing action {action_id}: '
     match action_config['type']:
         case 'set_temp':
-            message += f'Setting temeprature of {action_config['heater']} to {action_config['t_set']} and wait until the temperature of {action_config['temp_sensor']} changes by less than {action_config['delta_temp']} for {action_config['delta_time']} seconds!'
+            message += (f'Setting temeprature of {action_config['heater']} to {action_config['t_set']}'
+                        f' and wait until the temperature of {action_config['temp_sensor']} changes by less than'
+                        f' {action_config['delta_temp']} for {action_config['delta_time']} seconds!')
         case 'set_temp_blind':
             message += f'Setting temeprature of {action_config["heater"]} to {action_config["t_set"]}!'
         case 'trigger':
