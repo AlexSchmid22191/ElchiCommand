@@ -60,8 +60,7 @@ def execute_multiplexer_action(action_config: dict, devices_config: dict) -> Non
     for channel, value in action_config.items():
         if channel in ['type', 'triggerbox']:
             continue
-        pattern = r"^L([1-4])R([1-4])$"
-        n, m = re.match(pattern, channel).groups()
+        n, m = re.match('^state_L([1-4])R([1-4])$', channel).groups()
         try:
             device.set_single_relay((int(n), int(m)), value)
         except SerialException as e:
