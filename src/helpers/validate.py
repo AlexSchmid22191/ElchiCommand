@@ -27,6 +27,8 @@ def validate_config(config: dict) -> None:
             for key, value in action_config.items():
                 if not isinstance(key, int) or key < 1:
                     delayed_exit(f'Invalid preset key encounterd: {key}! Valid presetes are positive integers!')
+                elif value['type'] == 'iterate_list':
+                    _validate_list_action(config, value)
                 else:
                     _validate_action(key, value, device_config)
             print('Action config validation successful!')
@@ -145,6 +147,26 @@ def _validate_blind_temp_set_action(config: dict, devices: dict) -> None:
     _check_value_exists_bounds(config, 't_set', -200, 1500)
 
     print('Blind temperature set action validated sucessfully!')
+
+
+def _validate_list_action(whole_config: dict, config: dict) -> None:
+    """
+    The lsit action is a meta-action that iterates over a list of actions.
+    Therefore, the validation function needs to know about the entire config.
+    :arg whole_config: The whole config
+    :arg config: The list action config
+    """
+    if 'action_ids' not in config:
+        delayed_exit(f'Missing entry actions in action preset!', 1)
+    if not isinstance(config['action_ids'], list):
+        delayed_exit(f'Invalid entry actions in action preset! Expected list, got {type(whole_config["actions"])}', 1)
+    if not config['action_ids'][:len(config['processed_actions'])] == config['processed_actions']:
+        delayed_exit(f'Processed actions list does not match with beginning of action_ids list!', 1)
+    for action_id in config['action_ids']:
+        if action_id not in whole_config['actions']:
+            delayed_exit(f'Action with id {action_id} not found in config file!', 1)
+
+    print('List action validated sucessfully!')
 
 
 def _check_value_exists_bounds(config, key, min_value, max_value):

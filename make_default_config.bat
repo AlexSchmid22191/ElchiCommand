@@ -97,6 +97,10 @@ if not exist "%CFGDIR%" mkdir "%CFGDIR%"
   echo     state_L2R4: 0
   echo     state_L3R4: 0
   echo     state_L4R4: 0
+  echo   6:
+  echo    type: iterate_list
+  echo    action_ids: [1,2,3,4,5]
+  echo    processed_actions: []
   echo.
   echo # ----------------------------------------------------------------------------------------------------------------------
 )

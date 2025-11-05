@@ -16,7 +16,7 @@ devices:
     port: COMXY
   gas_ctrl_1:
     type: flow_controller
-    device: Test-MFC
+    device: Test MFC
     port: COMXY
   triggerbox_1:
     type: triggerbox
@@ -81,5 +81,10 @@ actions:
     state_L2R4: 0
     state_L3R4: 0
     state_L4R4: 0
+
+  6:
+    type: iterate_list
+    action_ids: [1,2,3,4,5]
+    processed_actions : []
 
 # ----------------------------------------------------------------------------------------------------------------------
