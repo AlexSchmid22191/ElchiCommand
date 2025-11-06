@@ -46,7 +46,7 @@ def execute_triggerbox_action(action_config: dict, devices_config: dict) -> None
         except SerialException as e:
             delayed_exit(f'Communication error when setting flow on channel {channel}: {e}')
         else:
-            print(f'Set channel {_chan} to {value} %')
+            print(f'Set channel {_chan} to {value}')
 
     try:
         device.close()
