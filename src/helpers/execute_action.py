@@ -31,7 +31,7 @@ def execute_massflow_action(action_config: dict, devices_config: dict) -> None:
     try:
         device.close()
     except SerialException as e:
-        delayed_exit(f'Communication error when closing flow_controller: {e}')
+        delayed_exit(f'Communication error when closing flow controller: {e}')
 
 
 def execute_triggerbox_action(action_config: dict, devices_config: dict) -> None:
@@ -69,9 +69,9 @@ def execute_multiplexer_action(action_config: dict, devices_config: dict) -> Non
             print(f'Set relay L{n}R{m} to {value}')
 
     try:
-        device.close()
+        device.serial.close()
     except SerialException as e:
-        delayed_exit(f'Communication error when closing triggerbox: {e}')
+        delayed_exit(f'Communication error when closing multiplexer: {e}')
 
 
 def execute_blind_temperature_action(action_config: dict, devices_config: dict) -> None:
