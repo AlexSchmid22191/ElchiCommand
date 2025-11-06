@@ -11,7 +11,7 @@ if not exist "%CFGDIR%" mkdir "%CFGDIR%"
   echo # Experiment configuration file for ElchiCommand
   echo # v1.0
   echo.
-  echo # ----------------------------------------------------------------------------------------------------------------------
+  echo # ---------------------------------------------------------------------------------------------------------------
   echo # Definition of available devices
   echo # Change the device type and port to match your setup or add new devices as explained in the coLab
   echo # ATTENTION: THE INDENTATION IS IMPORTANT!
@@ -37,10 +37,10 @@ if not exist "%CFGDIR%" mkdir "%CFGDIR%"
   echo     port: COMXY
   echo   multiplexer_1:
   echo     type: multiplexer
-  echo     device: Omniplex
+  echo     device: Test Multiplexer
   echo     port: COMXY
   echo.
-  echo # ----------------------------------------------------------------------------------------------------------------------
+  echo # ---------------------------------------------------------------------------------------------------------------
   echo # Definition of available actions to be performed as part of the experiment
   echo # For a detailed description of the actions, see the documentation in the colab
   echo # Edit these example actions to suit your needs or add new actions
@@ -102,7 +102,7 @@ if not exist "%CFGDIR%" mkdir "%CFGDIR%"
   echo    action_ids: [4, 4, 4, 4, 4]
   echo    processed_actions: []
   echo.
-  echo # ----------------------------------------------------------------------------------------------------------------------
+  echo # ---------------------------------------------------------------------------------------------------------------
 )
 
 echo Created "%CFGFILE%"

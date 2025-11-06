@@ -24,7 +24,7 @@ devices:
     port: COMXY
   multiplexer_1:
     type: multiplexer
-    device: Omniplex
+    device: Test Multiplexer
     port: COMXY
 
 # ----------------------------------------------------------------------------------------------------------------------

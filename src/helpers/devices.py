@@ -5,7 +5,9 @@ from src.drivers.Jumo import JumoQuantol
 from src.drivers.Keithly import Keithly2000Temp
 from src.drivers.Omega import OmegaPt
 from src.drivers.Pyrometer import Pyrometer
-from src.drivers.TestDevices import TestMFC, TestSensor, TestController, NiceTestController, TestValveController
+from src.drivers.TestDevices import TestMFC, TestSensor, TestController, NiceTestController, TestValveController, \
+    TestMultiplexer
+
 
 devices = {'heater': {'Eurotherm3216': Eurotherm3216,
                       'Eurotherm2408': Eurotherm2408,
@@ -26,4 +28,4 @@ devices = {'heater': {'Eurotherm3216': Eurotherm3216,
            'triggerbox': {'Omni Trigger': Valvolino,
                           'Valvolino': Valvolino,
                           'Test Trigger': TestValveController},
-           'multiplexer': {'Omniplex': Omniplex}}
+           'multiplexer': {'Omniplex': Omniplex, 'Test Multiplexer': TestMultiplexer}}

@@ -184,3 +184,22 @@ class NiceTestController(TestController):
             if self.wsp > self.tsp:
                 self.wsp = self.tsp
             return self.wsp
+
+
+class TestMultiplexer:
+    def __init__(self, portname: str) -> None:
+        self.lock = threading.Lock()
+        print(f'Test multiplexer connected at port {portname}')
+        self.state = [[False]*4]*4
+
+    def set_single_relay(self, relay: tuple, state: bool) -> None:
+        with self.lock:
+            self.state[relay[0] - 1][relay[1] - 1] = state
+            print(f'Set relay L{relay[0]}R{relay[1]} to: {state}')
+
+    def read_single_relay(self, relay: tuple) -> bool:
+        with self.lock:
+            return self.state[relay[0] - 1][relay[1] - 1]
+
+    def close(self):
+        print(f'Test multiplexer {self} closed!')
