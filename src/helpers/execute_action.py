@@ -58,15 +58,15 @@ def execute_multiplexer_action(action_config: dict, devices_config: dict) -> Non
     device = _safe_connect_device(action_config, devices_config, 'multiplexer')
 
     for channel, value in action_config.items():
-        if channel in ['type', 'triggerbox']:
+        if channel in ['type', 'multiplexer']:
             continue
         n, m = re.match('^state_L([1-4])R([1-4])$', channel).groups()
         try:
             device.set_single_relay((int(n), int(m)), value)
         except SerialException as e:
-            delayed_exit(f'Communication errorm when switch relay {channel}: {e}')
+            delayed_exit(f'Communication error when switching relay {channel}: {e}')
         else:
-            print(f'Set relay {channel} to {value} %')
+            print(f'Set relay L{n}R{m} to {value}')
 
     try:
         device.close()
