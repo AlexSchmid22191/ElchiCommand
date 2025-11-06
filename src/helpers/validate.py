@@ -49,8 +49,8 @@ def _validate_device_config(device_config: dict) -> None:
                          f' Valid device types: {', '.join(valid_devices[device_type])}', 1)
 
         if config['port'] not in available_ports:
-            delayed_exit(f'Invalid port encountered: {config['port']}!\n'
-                         f' Valid device types: {', '.join(valid_devices[device_type])}', 1)
+            delayed_exit(f'Invalid or unavailable port encountered: {config['port']}!\n'
+                         f' Valid ports are: {', '.join(available_ports)}', 1)
 
         print(f'Device {key} validation successful!')
 
