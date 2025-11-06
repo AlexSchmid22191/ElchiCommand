@@ -49,7 +49,7 @@ def log_action(action_id: int, action_config: dict):
 
 
 def log_actual_temeprature(setpoint: float, actual_temp: float):
-    log_dir = Path(user_config_dir('ElchiCommander'))
+    log_dir = Path(user_config_dir('ElchiCommander', 'ElchWorks', roaming=True))
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / f'temperature_log_{datetime.datetime.now().strftime("%Y-%m-%d")}.txt'
     try:
