@@ -33,7 +33,7 @@ if not exist "%CFGDIR%" mkdir "%CFGDIR%"
   echo     port: COMXY
   echo   triggerbox_1:
   echo     type: triggerbox
-  echo     device: Omnitrigger
+  echo     device: Omni Trigger
   echo     port: COMXY
   echo   multiplexer_1:
   echo     type: multiplexer
