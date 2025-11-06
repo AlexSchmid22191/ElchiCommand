@@ -190,6 +190,7 @@ class TestMultiplexer:
     def __init__(self, portname: str) -> None:
         self.lock = threading.Lock()
         print(f'Test multiplexer connected at port {portname}')
+        self.serial = self
         self.state = [[False]*4]*4
 
     def set_single_relay(self, relay: tuple, state: bool) -> None:
