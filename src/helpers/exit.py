@@ -1,6 +1,6 @@
 import sys
 import time
-from src.helpers.logging import log_error
+from src.helpers.log_error import log_error
 from colorama import just_fix_windows_console, Fore, Style
 
 just_fix_windows_console()
