@@ -50,3 +50,4 @@ dist_dir = Path("dist") / 'elchi_commander'
 dist_dir.mkdir(parents=True, exist_ok=True)
 shutil.copy2("make_default_config.bat", dist_dir / "make_default_config.bat")
 shutil.copy2("make_test_config.bat", dist_dir / "make_test_config.bat")
+shutil.copy2("Readme.md", dist_dir / "Readme.md.bat")
