@@ -126,6 +126,7 @@ def execute_temperature_action(action_config: dict, devices_config: dict) -> Non
                 else:
                     time_of_last_reading = time.time()
                     if abs(sensor_temp - last_sensor_temp) > delta_temp:
+                        last_sensor_temp = sensor_temp
                         print(f'Temperature deviation larger than {delta_temp}! Resetting countdown!')
                         time_remaining = delta_time
                     else:
