@@ -13,9 +13,10 @@ def query_yes_no(question):
             return query_yes_no(question)
 
 
-def query_options(question: str, options: list[str]) -> str | None:
+def query_options(question: str, options: list[str], can_be_canceled=True) -> str | None:
     options_dict = {index + 1: option for index, option in enumerate(options)}
-    options_dict.update({0: 'Cancel'})
+    if can_be_canceled:
+        options_dict.update({0: 'Cancel'})
     print(question + "\nYour options are: \n" + "\n".join(f"{i}: {o}" for i, o in options_dict.items()))
     match input(f'Enter your selection [{1} - {len(options)}]: ').lower().strip():
         case '0':
@@ -68,3 +69,19 @@ def query_bounded_int(question: str, min_value: int, max_value: int):
             return query_bounded_int(question, min_value, max_value)
         else:
             return answer
+
+
+def query_bounded_list(question: str, min_value: float, max_value: float, n_elements: int):
+    answer = input(question)
+    _list = []
+    try:
+        _list = [float(flow.strip()) for flow in answer.split(',')]
+    except ValueError:
+        print(f'Sorry, {answer} could not be converted to floats!')
+        return query_bounded_list(question, min_value, max_value, n_elements)
+    else:
+        if len(_list) == n_elements and min_value <= min(_list) <= max_value and min_value <= max(_list) <= max_value:
+            return _list
+        else:
+            print(f'Sorry, {answer} contains values not in the valid range of {min_value} to {max_value}!')
+            return query_bounded_list(question, min_value, max_value, n_elements)
