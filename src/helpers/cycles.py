@@ -134,3 +134,11 @@ class MultiplexerCycle(Cycle):
             }
             for state in self.states
             for (s11, s21, s31, s41, s12, s22, s32, s42, s13, s23, s33, s43, s14, s24, s34, s44) in tuple(state)]
+
+
+def flatten(x):
+    for elem in x:
+        if isinstance(elem, list):
+            yield from flatten(elem)
+        else:
+            yield elem
