@@ -151,7 +151,11 @@ def add_device() -> dict | None:
     match query_options('What type of device do you want to add?', valid_devices):
         case device_type if device_type in valid_devices:
             device = query_options(f'What type of {device_type} do you want to use?', valid_devices[device_type])
+            if device is None:
+                return None
             port = query_options('What port is it connected to?', available_ports)
+            if port is None:
+                return None
             device_id = query_unique(f'Choose a unique name for this {device_type}: ', list(devices.keys()))
             return {device_id: {'type': device_type, 'device': device, 'port': port}}
         case '0':
