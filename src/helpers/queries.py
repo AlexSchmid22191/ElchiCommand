@@ -18,7 +18,7 @@ def query_options(question: str, options: list[str], can_be_canceled=True) -> st
     if can_be_canceled:
         options_dict.update({0: 'Cancel'})
     print(question + "\nYour options are: \n" + "\n".join(f"{i}: {o}" for i, o in options_dict.items()))
-    match input(f'Enter your selection [{1} - {len(options)}]: ').lower().strip():
+    match input(f'Enter your selection [{min(options_dict.keys())} - {max(options_dict.keys())}]: ').lower().strip():
         case '0':
             return None
         case n if n.isdigit() and 1 <= int(n) <= len(options):
@@ -42,6 +42,7 @@ def query_unique(question: str, exclusions: list[str]):
 
 
 def query_bounded(question: str, min_value: float, max_value: float):
+    question += f'\nEnter a value from {min_value} to {max_value}: '
     answer = input(question)
     try:
         answer = float(answer)
@@ -57,6 +58,7 @@ def query_bounded(question: str, min_value: float, max_value: float):
 
 
 def query_bounded_int(question: str, min_value: int, max_value: int):
+    question += f'\nEnter a whole number from {min_value} to {max_value}: '
     answer = input(question)
     try:
         answer = int(answer)
@@ -72,6 +74,7 @@ def query_bounded_int(question: str, min_value: int, max_value: int):
 
 
 def query_bounded_list(question: str, min_value: float, max_value: float, n_elements: int):
+    question += f'\nEnter {n_elements} comma-separated values from {min_value} to {max_value}: '
     answer = input(question)
     _list = []
     try:
@@ -85,3 +88,14 @@ def query_bounded_list(question: str, min_value: float, max_value: float, n_elem
         else:
             print(f'Sorry, {answer} contains values not in the valid range of {min_value} to {max_value}!')
             return query_bounded_list(question, min_value, max_value, n_elements)
+
+
+def query_options_list(question: str, options: tuple, n_elements: int):
+    question += f'\nEnter {n_elements} comma-separated values, each being one of [{", ".join(options)}]: '
+    answer = input(question)
+    _list = []
+    if any([x not in options for x in answer.split(',')]):
+        print(f'Sorry, one or more of the values in {answer} are not valid!')
+        return query_options_list(question, options, n_elements)
+    else:
+        return _list
