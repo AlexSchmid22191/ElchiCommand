@@ -1,14 +1,14 @@
 from pathlib import Path
-
+import os
 import serial.tools.list_ports
 import yaml
 from platformdirs import user_config_dir
-
+import datetime
 from src.helpers.cycles import Cycle, TemperatureCycle, BlindTemperatureCycle, FlowCycle, TriggerCycle, \
     MultiplexerCycle, flatten
 from src.helpers.devices import devices as valid_devices
 from src.helpers.queries import (query_yes_no, query_options, query_unique, query_bounded, query_bounded_int,
-                                 query_bounded_list)
+                                 query_bounded_list, query_options_list)
 
 available_ports = [port.device for port in serial.tools.list_ports.comports()]
 cycle_types = ['Temperature', 'Temperature (sensorless)', 'Flow', 'Trigger', 'Multiplexer']
@@ -19,15 +19,16 @@ edit_stack = ['Root']
 
 
 def main():
-    print('Hi! This is ElchiCreator the interactive configuration writer!')
-    print('This tool will help you create your own configuration file for ElchiCommander!')
+    print('Hi! I am ElchiCreator the interactive configuration writer!')
+    print('I will help you create your own configuration file for ElchiCommander!')
     print('First, lets add all the devices you want to control in the experiment!')
 
     while query_yes_no('Do you want to add a device?'):
         if device := add_device():
             devices.update(device)
 
-    print('Done! Now lets define the cycles you want to execute!')
+    print('Done! Now lets define the cycles that make up your experiment!')
+
     while query_yes_no('Do you want to add a cycle?'):
         if cycle := add_cycle():
             cycles.append(cycle)
@@ -44,9 +45,15 @@ def main():
     print('Done! Here is the configuration file I created for you:')
     print(yaml.dump(config, default_flow_style=False, default_style=''))
 
-    if query_yes_no('Do you want to save this as config.yaml?'):
+    if query_yes_no('Do you want to save this for use with ElchiCommander?'):
         config_path = Path(user_config_dir('ElchiCommander',
                                            'ElchWorks', roaming=True)) / 'config.yaml'
+
+        if os.path.exists(config_path):
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+            base, ext = os.path.splitext(config_path)
+            os.rename(config_path, f'{base}_{timestamp}{ext}')
+
         with open(config_path, "w", encoding="utf-8") as f:
             yaml.dump(config, f, default_flow_style=False, default_style='')
 
@@ -57,62 +64,70 @@ def add_cycle() -> Cycle | None:
         case 'Temperature':
             edit_stack.append('Temperature')
             heater = query_options('Which heater do you want to use?',
-                                   [device_id for device_id, device in devices.items() if device['type'] == 'heater'],
-                                   can_be_canceled=False)
+                                   [device_id for device_id, device in devices.items() if device['type'] == 'heater'])
+            if heater is None:
+                return None
             sensor = query_options('Which temperature sensor do you want to use?',
                                    [device_id for device_id, device in devices.items() if
-                                    device['type'] == 'temp_sensor'], can_be_canceled=False)
-            delta_temp = query_bounded('How much should the temperature change by at most?',
+                                    device['type'] == 'temp_sensor'])
+            if sensor is None:
+                return None
+            delta_temp = query_bounded('What is the maximum temperature change in degree Celsius that is still'
+                                       ' regarded stable?',
                                        0.01, 100)
-            delta_time = query_bounded('How long should the temperature change no more than that?',
+            delta_time = query_bounded('For how many seconds should the temperature change by less than that?',
                                        1, 1000000)
             time_res = query_bounded_int('How often should the temperature be checked?', 1,
                                          1000000)
-            t_start = query_bounded_int('What is the starting temperature?', 0, 1500)
-            t_end = query_bounded_int('What is the ending temperature?', 0, 1500)
-            t_step = query_bounded_int('What is the temperature step?', 1, 1000)
+            t_start = query_bounded_int('What is the start temperature in degree Celsius?', 0, 1500)
+            t_end = query_bounded_int('What is the end temperature in degree Celsius?', 0, 1500)
+            t_step = query_bounded_int('What is the temperature step in degree Celsius?', 1, 1000)
             cycle = TemperatureCycle(t_start, t_end, t_step, heater, sensor, delta_time, delta_temp, time_res)
         case 'Temperature (sensorless)':
             edit_stack.append('Temperature (sensorless)')
             heater = query_options('Which heater do you want to use?',
-                                   [device_id for device_id, device in devices.items() if device['type'] == 'heater'],
-                                   can_be_canceled=False)
-            t_start = query_bounded_int('What is the starting temperature?', 0, 1500)
-            t_end = query_bounded_int('What is the ending temperature?', 0, 1500)
-            t_step = query_bounded_int('What is the temperature step?', 1, 1000)
+                                   [device_id for device_id, device in devices.items() if device['type'] == 'heater'])
+            if heater is None:
+                return None
+            t_start = query_bounded_int('What is the start temperature in degree Celsius?', 0, 1500)
+            t_end = query_bounded_int('What is the end temperature in degree Celsius?', 0, 1500)
+            t_step = query_bounded_int('What is the temperature step in degree Celsius?', 1, 1000)
             cycle = BlindTemperatureCycle(t_start, t_end, t_step, heater)
         case 'Flow':
             edit_stack.append('Flow')
             flow_controller = query_options('Which flow controller do you want to use?',
                                             [device_id for device_id, device in devices.items()
-                                             if device['type'] == 'flow_controller'], can_be_canceled=False)
+                                             if device['type'] == 'flow_controller'])
+            if flow_controller is None:
+                return None
             flows = []
-            while query_yes_no('Do you want to add a flow rate?'):
-                flows.append(query_bounded_list('What are the desired flows for channels 1-4?\n'
-                                                'Enter as comma separated list of 4 values from 0-100: ',
+            while query_yes_no('Do you want to add a set of flow rates?'):
+                flows.append(query_bounded_list('What are the flow percentages for channels 1 to 4?',
                                                 0.0, 100, 4))
             cycle = FlowCycle(flow_controller, flows)
         case 'Trigger':
             edit_stack.append('Trigger')
             triggerbox = query_options('Which triggerbox do you want to use?',
                                        [device_id for device_id, device in devices.items()
-                                        if device['type'] == 'triggerbox'], can_be_canceled=False)
+                                        if device['type'] == 'triggerbox'])
+            if triggerbox is None:
+                return None
             states = []
-            while query_yes_no('Do you want to add a relay state?'):
-                states.append(query_bounded_list('What are the states of relays 1-4?\n'
-                                                 'Enter as comma separated list of 4 values, 0 or 1: ',
-                                                 0, 100, 4))
+            while query_yes_no('Do you want to add a triggerbox state?'):
+                states.append(query_options_list('What are the states of relays 1 to 4?',
+                                                 ('0', '1'), 4))
             cycle = TriggerCycle(triggerbox, states)
         case 'Multiplexer':
             edit_stack.append('Multiplexer')
             multiplexer = query_options('Which multiplexer do you want to use?',
                                         [device_id for device_id, device in devices.items()
-                                         if device['type'] == 'multiplexer'], can_be_canceled=False)
+                                         if device['type'] == 'multiplexer'])
+            if multiplexer is None:
+                return None
             states = []
             while query_yes_no('Do you want to add a multiplexer state?'):
-                states.append(query_bounded_list('What are states of relays L1R1, L2R1,... L4R4?\n'
-                                                 'Enter as comma separated list of 16 values, 0 or 1: ',
-                                                 0, 1, 16))
+                states.append(query_options_list('What are states of relays L1R1, L2R1,... L4R4?',
+                                                 ('0', '1'), 16))
             cycle = MultiplexerCycle(multiplexer, states)
         case _:
             # Default case should never be reached
