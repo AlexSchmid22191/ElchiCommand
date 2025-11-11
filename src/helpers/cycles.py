@@ -133,7 +133,7 @@ class MultiplexerCycle(Cycle):
                 'state_L4R4': s44,
             }
             for state in self.states
-            for (s11, s21, s31, s41, s12, s22, s32, s42, s13, s23, s33, s43, s14, s24, s34, s44) in tuple(state)]
+            for (s11, s21, s31, s41, s12, s22, s32, s42, s13, s23, s33, s43, s14, s24, s34, s44) in [tuple(state)]]
 
 
 def flatten(x):

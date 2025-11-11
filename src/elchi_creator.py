@@ -47,9 +47,12 @@ def main():
 
     if query_yes_no('Do you want to save this for use with ElchiCommander?'):
         config_path = Path(user_config_dir('ElchiCommander',
-                                           'ElchWorks', roaming=True)) / 'config.yaml'
+                                           'ElchWorks', roaming=True))
 
-        if os.path.exists(config_path):
+        config_path.mkdir(parents=True, exist_ok=True)
+        config_path = config_path / 'config.yaml'
+
+        if os.path.isfile(config_path):
             timestamp = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
             base, ext = os.path.splitext(config_path)
             os.rename(config_path, f'{base}_{timestamp}{ext}')
@@ -116,6 +119,7 @@ def add_cycle() -> Cycle | None:
             while query_yes_no('Do you want to add a triggerbox state?'):
                 states.append(query_options_list('What are the states of relays 1 to 4?',
                                                  ('0', '1'), 4))
+            states = [[int(x) for x in state] for state in states]
             cycle = TriggerCycle(triggerbox, states)
         case 'Multiplexer':
             edit_stack.append('Multiplexer')
@@ -128,6 +132,7 @@ def add_cycle() -> Cycle | None:
             while query_yes_no('Do you want to add a multiplexer state?'):
                 states.append(query_options_list('What are states of relays L1R1, L2R1,... L4R4?',
                                                  ('0', '1'), 16))
+            states = [[int(x) for x in state] for state in states]
             cycle = MultiplexerCycle(multiplexer, states)
         case _:
             # Default case should never be reached

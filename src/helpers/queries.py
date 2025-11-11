@@ -74,8 +74,7 @@ def query_bounded_int(question: str, min_value: int, max_value: int):
 
 
 def query_bounded_list(question: str, min_value: float, max_value: float, n_elements: int):
-    question += f'\nEnter {n_elements} comma-separated values from {min_value} to {max_value}: '
-    answer = input(question)
+    answer = input(question + f'\nEnter {n_elements} comma-separated values from {min_value} to {max_value}: ')
     _list = []
     try:
         _list = [float(flow.strip()) for flow in answer.split(',')]
@@ -90,12 +89,14 @@ def query_bounded_list(question: str, min_value: float, max_value: float, n_elem
             return query_bounded_list(question, min_value, max_value, n_elements)
 
 
-def query_options_list(question: str, options: tuple, n_elements: int):
-    question += f'\nEnter {n_elements} comma-separated values, each being one of [{", ".join(options)}]: '
-    answer = input(question)
-    _list = []
-    if any([x not in options for x in answer.split(',')]):
+def query_options_list(question: str, options: tuple, n_elements: int) -> list:
+    answer = input(question + f'\nEnter {n_elements} comma-separated values, each being one of [{", ".join(options)}]: ')
+    _list = answer.split(',')
+    if any([x not in options for x in _list]):
         print(f'Sorry, one or more of the values in {answer} are not valid!')
+        return query_options_list(question, options, n_elements)
+    elif len(_list) != n_elements:
+        print(f'Sorry, the number of values entered is not equal to {n_elements}!')
         return query_options_list(question, options, n_elements)
     else:
         return _list
