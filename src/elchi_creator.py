@@ -1,6 +1,11 @@
-import serial.tools.list_ports
+from pathlib import Path
 
-from src.helpers.cycles import Cycle, TemperatureCycle, BlindTemperatureCycle, FlowCycle, TriggerCycle, MultiplexerCycle
+import serial.tools.list_ports
+import yaml
+from platformdirs import user_config_dir
+
+from src.helpers.cycles import Cycle, TemperatureCycle, BlindTemperatureCycle, FlowCycle, TriggerCycle, \
+    MultiplexerCycle, flatten
 from src.helpers.devices import devices as valid_devices
 from src.helpers.queries import (query_yes_no, query_options, query_unique, query_bounded, query_bounded_int,
                                  query_bounded_list)
@@ -26,12 +31,24 @@ def main():
     while query_yes_no('Do you want to add a cycle?'):
         if cycle := add_cycle():
             cycles.append(cycle)
-    # Process all cycles into a nested list of action dicts via unroll functions
-    # Flatten that list
-    # Enumerate that list into dict with action id as keys and action dict as value
-    # Combine with devices dict
-    # Add some comments
-    # Dump that dict to a yaml file
+
+    actions = [cycle.unroll() for cycle in cycles]
+    actions = list(flatten(actions))
+    actions = {key: action for key, action in enumerate(actions, start=1)}
+
+    actions.update({0: {'type': 'iterate_list', 'processed_actions': [],
+                        'action_ids': sorted(list(actions.keys()))}})
+
+    config = {'devices': devices, 'actions': actions}
+
+    print('Done! Here is the configuration file I created for you:')
+    print(yaml.dump(config, default_flow_style=False, default_style=''))
+
+    if query_yes_no('Do you want to save this as config.yaml?'):
+        config_path = Path(user_config_dir('ElchiCommander',
+                                           'ElchWorks', roaming=True)) / 'config.yaml'
+        with open(config_path, "w", encoding="utf-8") as f:
+            yaml.dump(config, f, default_flow_style=False, default_style='')
 
 
 def add_cycle() -> Cycle | None:
@@ -78,8 +95,8 @@ def add_cycle() -> Cycle | None:
         case 'Trigger':
             edit_stack.append('Trigger')
             triggerbox = query_options('Which triggerbox do you want to use?',
-                                            [device_id for device_id, device in devices.items()
-                                             if device['type'] == 'triggerbox'], can_be_canceled=False)
+                                       [device_id for device_id, device in devices.items()
+                                        if device['type'] == 'triggerbox'], can_be_canceled=False)
             states = []
             while query_yes_no('Do you want to add a relay state?'):
                 states.append(query_bounded_list('What are the states of relays 1-4?\n'
