@@ -12,6 +12,7 @@ from src.helpers.devices import devices
 from src.helpers.exit import delayed_exit
 from src.helpers.logging import log_action, log_actual_temeprature
 from src.helpers.logging import log_message
+from src.helpers.queries import query_yes_no
 
 
 def execute_massflow_action(action_config: dict, devices_config: dict) -> None:
@@ -213,10 +214,24 @@ def _safe_connect_device(action_config: dict, devices_config: dict, dev_type: st
     dev_class = devices[dev_type][devices_config[dev_id]['device']]
     dev_port = devices_config[dev_id]['port']
     print(f'Connecting {dev_id} at {dev_port}...')
-    try:
-        device = dev_class(dev_port)
-    except SerialException:
-        delayed_exit(f'Error connecting {dev_id} at {dev_port}!', 1)
+    for _ in range(5):
+        try:
+            device = dev_class(dev_port)
+        except SerialException:
+            print(f'Error connecting {dev_id} at {dev_port}! Retrying in 2 seconds...')
+            time.sleep(2)
+        else:
+            print('Device connection successful!')
+            return device
     else:
-        print('Device connection successful!')
-        return device
+        while query_yes_no(f'Failed to connect {dev_id} at {dev_port}! Retry?'):
+            try:
+                device = dev_class(dev_port)
+            except SerialException as e:
+                print(f'Error connecting {dev_id} at {dev_port}: {e}')
+            else:
+                print('Device connection successful!')
+                return device
+        else:
+            delayed_exit('Aborted by user!')
+            return None
