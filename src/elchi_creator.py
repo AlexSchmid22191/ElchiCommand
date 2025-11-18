@@ -80,7 +80,7 @@ def add_cycle() -> Cycle | None:
                                        0.01, 100)
             delta_time = query_bounded('For how many seconds should the temperature change by less than that?',
                                        1, 1000000)
-            time_res = query_bounded_int('How often should the temperature be checked?', 1,
+            time_res = query_bounded_int('How many seconds should pass between temperature checks?', 1,
                                          1000000)
             t_start = query_bounded_int('What is the start temperature in degree Celsius?', 0, 1500)
             t_end = query_bounded_int('What is the end temperature in degree Celsius?', 0, 1500)
