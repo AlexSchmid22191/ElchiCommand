@@ -6,7 +6,7 @@ from pathlib import Path
 from platformdirs import user_config_dir
 
 from src.helpers.execute_action import execute_action
-from src.helpers.exit import delayed_exit, report_sucess
+from src.helpers.exit import delayed_exit, report_success
 from src.helpers.file_load import load_config
 from src.helpers.logging import log_message
 from src.helpers.validate import validate_config
@@ -45,8 +45,8 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as ex:
-        delayed_exit(f'An unexpected error occured: {ex}\n TracebacK: {traceback.format_exc()}')
+        delayed_exit(f'An unexpected error occurred: {ex}\n Traceback: {traceback.format_exc()}')
     else:
         log_message(f'Action executed successfully!')
         log_message(f'ElchiCommander finished!')
-        report_sucess()
+        report_success()
