@@ -1,7 +1,7 @@
 # ElchiCommander
 
-Version: 1.0
-Date: 2025-11-06
+Version: 1.1
+Date: 2025-11-16
 Author: Alex Schmid
 Organization: TU Wien
 
@@ -32,6 +32,10 @@ while actions specify specific actions to be executed using one more or more of 
 certain temperature, or setting a specific flow rate).
 
 A detailed specification of the configuration file format can be found below.
+
+#### ElchiCreator Wizard
+ElchiCreator is an interactive command line wizard that helps you in creating a configuration file step-by-step. It is especially suited for creating (nested) cycles, e.g. temeprature and trigger or gas and temperature.
+It is found in the ElchiCommander installation directory.
 
 ### Running
 
