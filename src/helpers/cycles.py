@@ -38,6 +38,7 @@ class TemperatureCycle(Cycle):
         if abs(end - start) % step != 0:
             print('Warning: The step size does not divide the difference between the start and end temperatures!'
                   ' Check the generated list!')
+        step = abs(step) * (-1 if start > end else 1)
         return range(start, end + 1, step)
 
     def _to_actions(self):
@@ -56,6 +57,7 @@ class BlindTemperatureCycle(Cycle):
         if abs(end - start) % step != 0:
             print('Warning: The step size does not divide the difference between the start and end temperatures!'
                   ' Check the generated list!')
+        step = abs(step) * (-1 if start > end else 1)
         return range(start, end + 1, step)
 
     def _to_actions(self):
