@@ -25,8 +25,8 @@ def validate_config(config: dict) -> None:
             delayed_exit('Missing actions section in config file!', 1)
         else:
             for key, value in action_config.items():
-                if not isinstance(key, int) or key < 1:
-                    delayed_exit(f'Invalid preset key encounterd: {key}! Valid presetes are positive integers!')
+                if not isinstance(key, int) or key <= 1:
+                    delayed_exit(f'Invalid preset key encountered: {key}! Valid presets are positive integers!')
                 elif value['type'] == 'iterate_list':
                     _validate_list_action(config, value)
                 else:
@@ -65,11 +65,11 @@ def _validate_action(key, config, device_config):
             print('Detected temperature set action!')
             _validate_temp_set_action(config, device_config)
         case 'set_temp_blind':
-            print('Detected blind temeprature set action!')
+            print('Detected blind temperature set action!')
             _validate_blind_temp_set_action(config, device_config)
         case 'gas_ctrl':
             print('Detected gas controller action!')
-            _validate_massflow_action(config, device_config)
+            _validate_mass_flow_action(config, device_config)
         case 'trigger':
             print('Detected triggerbox action!')
             _validate_triggerbox_action(config, device_config)
@@ -81,20 +81,20 @@ def _validate_action(key, config, device_config):
                          f'Valid action types are: {', '.join(valid_actions)}', 1)
 
 
-def _validate_massflow_action(config: dict, devices: dict) -> None:
+def _validate_mass_flow_action(config: dict, devices: dict) -> None:
     _check_device_exists_and_type(config, 'flow_controller', devices)
 
     for inner_key, inner_value in config.items():
         if inner_key in ['flow_controller', 'type']:
             continue
         if not re.compile(r'^flow_[1-4]$').match(inner_key):
-            delayed_exit(f'Invalid channel encounterd: {inner_key}!'
+            delayed_exit(f'Invalid channel encountered: {inner_key}!'
                          f' Valid channels are: flow_1, flow_2, flow_3 and flow_4!')
         if not isinstance(inner_value, (int, float)) or inner_value < 0 or inner_value > 100:
             delayed_exit(f'Invalid value encountered for channel {inner_key}: {inner_value}!'
                          f' Valid values are: 0 to 100')
 
-    print('Gas control action validated sucessfully!')
+    print('Gas control action validated successfully!')
 
 
 def _validate_triggerbox_action(config: dict, devices: dict) -> None:
@@ -105,13 +105,13 @@ def _validate_triggerbox_action(config: dict, devices: dict) -> None:
             continue
         else:
             if not re.compile(r'^state_[1-4]$').match(inner_key):
-                delayed_exit(f'Invalid channel encounterd: {inner_key}!'
+                delayed_exit(f'Invalid channel encountered: {inner_key}!'
                              f' Valid channels are: state_1, state_2, state_3 and state_4!')
             if inner_value not in [0, 1]:
                 delayed_exit(f'Invalid value encountered for channel {inner_key}: {inner_value}!'
                              f' Valid values are: 0 or 1')
 
-    print('Triggerbox action validated sucessfully!')
+    print('Triggerbox action validated successfully!')
 
 
 def _validate_multiplexer_action(config: dict, devices: dict) -> None:
@@ -122,13 +122,13 @@ def _validate_multiplexer_action(config: dict, devices: dict) -> None:
             continue
         else:
             if not re.compile(r'^state_L[1-4]R[1-4]$').match(inner_key):
-                delayed_exit(f'Invalid channel encounterd: {inner_key}!'
+                delayed_exit(f'Invalid channel encountered: {inner_key}!'
                              f' Valid channels are: state_LnRm, where n and m are 1 to 4!')
             if inner_value not in [0, 1]:
                 delayed_exit(f'Invalid value encountered for channel {inner_key}: {inner_value}!'
                              f' Valid values are: 0 or 1')
 
-    print('Multiplexer action validated sucessfully!')
+    print('Multiplexer action validated successfully!')
 
 
 def _validate_temp_set_action(config: dict, devices: dict) -> None:
@@ -139,19 +139,19 @@ def _validate_temp_set_action(config: dict, devices: dict) -> None:
     _check_value_exists_bounds(config, 'delta_time', 1, 1E6)
     _check_value_exists_bounds(config, 'time_res', 1, 100)
 
-    print('Temperature set action validated sucessfully!')
+    print('Temperature set action validated successfully!')
 
 
 def _validate_blind_temp_set_action(config: dict, devices: dict) -> None:
     _check_device_exists_and_type(config, 'heater', devices)
     _check_value_exists_bounds(config, 't_set', -200, 1500)
 
-    print('Blind temperature set action validated sucessfully!')
+    print('Blind temperature set action validated successfully!')
 
 
 def _validate_list_action(whole_config: dict, config: dict) -> None:
     """
-    The lsit action is a meta-action that iterates over a list of actions.
+    The list action is a meta-action that iterates over a list of actions.
     Therefore, the validation function needs to know about the entire config.
     :arg whole_config: The whole config
     :arg config: The list action config
@@ -166,7 +166,7 @@ def _validate_list_action(whole_config: dict, config: dict) -> None:
         if action_id not in whole_config['actions']:
             delayed_exit(f'Action with id {action_id} not found in config file!', 1)
 
-    print('List action validated sucessfully!')
+    print('List action validated successfully!')
 
 
 def _check_value_exists_bounds(config, key, min_value, max_value):
