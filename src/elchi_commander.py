@@ -25,7 +25,7 @@ def main() -> None:
     except ArgumentError as e:
         delayed_exit(f'Invalid command line arguments, {e}')
     else:
-        if args.action_id < 1:
+        if args.action_id < 0:
             delayed_exit('Invalid action id! Valid action ids are positive integers!')
         else:
             log_message(f'Action {args.action_id} requested!')

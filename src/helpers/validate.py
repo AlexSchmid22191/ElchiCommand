@@ -25,7 +25,7 @@ def validate_config(config: dict) -> None:
             delayed_exit('Missing actions section in config file!', 1)
         else:
             for key, value in action_config.items():
-                if not isinstance(key, int) or key <= 1:
+                if not isinstance(key, int) or key < 0:
                     delayed_exit(f'Invalid preset key encountered: {key}! Valid presets are positive integers!')
                 elif value['type'] == 'iterate_list':
                     _validate_list_action(config, value)
