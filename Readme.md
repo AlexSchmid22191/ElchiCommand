@@ -1,7 +1,7 @@
 # ElchiCommander
 
-Version: 1.1
-Date: 2025-11-16
+Version: 1.3
+Date: 2025-12-01
 Author: Alex Schmid
 Organization: TU Wien
 
@@ -34,7 +34,9 @@ certain temperature, or setting a specific flow rate).
 A detailed specification of the configuration file format can be found below.
 
 #### ElchiCreator Wizard
-ElchiCreator is an interactive command line wizard that helps you in creating a configuration file step-by-step. It is especially suited for creating (nested) cycles, e.g. temeprature and trigger or gas and temperature.
+
+ElchiCreator is an interactive command line wizard that helps you in creating a configuration file step-by-step. It is
+especially suited for creating (nested) cycles, e.g. temeprature and trigger or gas and temperature.
 It is found in the ElchiCommander installation directory.
 
 ### Running
@@ -88,6 +90,7 @@ The type of the device. Must be one of:
 - flow_controller
 - triggerbox
 - multiplexer
+- wait
 
 #### device
 
@@ -206,6 +209,14 @@ Required fields:
 - state_L2R4: State of valve or relay connecting port L2 to R4. Must be either 0 or 1.
 - state_L3R4: State of valve or relay connecting port L3 to R4. Must be either 0 or 1.
 - state_L4R4: State of valve or relay connecting port L4 to R4. Must be either 0 or 1.
+
+#### wait
+
+Wait for a given amount of time. (Typically used for repeated measurements with the same parameters).
+Required fields:
+
+- type: wait
+- wait_time: The time in seconds to wait. Must be between 0 and 1,000,000.
 
 #### iterate_list
 
