@@ -1,17 +1,19 @@
-from pathlib import Path
+import datetime
 import os
+from pathlib import Path
+
 import serial.tools.list_ports
 import yaml
 from platformdirs import user_config_dir
-import datetime
+
 from src.helpers.cycles import Cycle, TemperatureCycle, BlindTemperatureCycle, FlowCycle, TriggerCycle, \
-    MultiplexerCycle, flatten
+    MultiplexerCycle, RepCycle, flatten
 from src.helpers.devices import devices as valid_devices
 from src.helpers.queries import (query_yes_no, query_options, query_unique, query_bounded, query_bounded_int,
                                  query_bounded_list, query_options_list)
 
 available_ports = [port.device for port in serial.tools.list_ports.comports()]
-cycle_types = ['Temperature', 'Temperature (sensorless)', 'Flow', 'Trigger', 'Multiplexer']
+cycle_types = ['Temperature', 'Temperature (sensorless)', 'Flow', 'Trigger', 'Multiplexer', 'Repetition']
 
 devices = {}
 cycles = []
@@ -134,9 +136,15 @@ def add_cycle() -> Cycle | None:
                                                  ('0', '1'), 16))
             states = [[int(x) for x in state] for state in states]
             cycle = MultiplexerCycle(multiplexer, states)
+        case 'Repetition':
+            reps = query_bounded_int('How many repetition spectra do you want to record?',
+                                     1, 1000000)
+            delay = query_bounded_int('How many seconds should pass between spectra?',
+                                      1, 1000000)
+            cycle = RepCycle(delay, reps)
         case _:
+            raise ValueError('Invalid cycle type!')
             # Default case should never be reached
-            pass
 
     while query_yes_no(
             'You are here: ' + ' --> '.join(edit_stack) + '\nDo you want to ad a subcycle to this cycle?'):

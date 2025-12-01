@@ -138,6 +138,16 @@ class MultiplexerCycle(Cycle):
             for (s11, s21, s31, s41, s12, s22, s32, s42, s13, s23, s33, s43, s14, s24, s34, s44) in [tuple(state)]]
 
 
+class RepCycle(Cycle):
+    def __init__(self, wait_time, repetitions):
+        super().__init__()
+        self.wait_time = wait_time
+        self.repetitions = repetitions
+
+    def _to_actions(self):
+        return [{'type': 'wait', 'wait_time': self.wait_time} for _ in range(self.repetitions)]
+
+
 def flatten(x):
     for elem in x:
         if isinstance(elem, list):
