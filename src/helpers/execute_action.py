@@ -198,12 +198,18 @@ def execute_action(action_id, config: dict) -> None:
             log_action(action_id, action_config)
             final_sensor_temp = execute_temperature_action(action_config, device_config)
             log_actual_temeprature(action_config['t_set'], final_sensor_temp)
-            log_message(f'Temeprature stable: {final_sensor_temp}')
+            log_message(f'Temperature stable: {final_sensor_temp}')
         case 'set_temp_blind':
             log_action(action_id, action_config)
             execute_blind_temperature_action(action_config, device_config)
         case 'iterate_list':
             execute_iterate_list_action(action_id, action_config, config)
+        case 'wait':
+            wait_time = action_config['wait_time']
+            print(f'Waiting for {wait_time} seconds:')
+            for i in range(int(wait_time)):
+                print(f'{wait_time - i} seconds left!')
+                time.sleep(1)
         case _:
             # This should never be reached as the config was validated before
             delayed_exit(f'Invalid action type encountered: {action_config['type']}!')

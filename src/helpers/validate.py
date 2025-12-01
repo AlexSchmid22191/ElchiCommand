@@ -76,9 +76,17 @@ def _validate_action(key, config, device_config):
         case 'multiplexer':
             print('Detected multiplexer action!')
             _validate_multiplexer_action(config, device_config)
+        case 'wait':
+            print('Detected wait action!')
+            _validate_wait_action(config)
         case _:
             delayed_exit(f'Invalid action type encountered: {config['type']}!'
                          f'Valid action types are: {', '.join(valid_actions)}', 1)
+
+
+def _validate_wait_action(config: dict) -> None:
+    _check_value_exists_bounds(config, 'wait_time', 1, 1E6)
+    print('Wait action validated successfully!')
 
 
 def _validate_mass_flow_action(config: dict, devices: dict) -> None:

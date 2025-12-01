@@ -42,6 +42,8 @@ def log_action(action_id: int, action_config: dict):
             message = f'Setting multiplexer {action_config['multiplexer']} to:'
             message += ', '.join(f'{key}: {value}' for key, value in action_config.items()
                                  if key not in ['type', 'multiplexer'])
+        case 'wait':
+            message += f'Waiting for {action_config["wait_time"]} seconds!'
         case _:
             # Should be unreachable as the config was validated before
             delayed_exit(f'Invalid action type encountered: {action_config["type"]}', 1)
